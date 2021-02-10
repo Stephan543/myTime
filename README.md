@@ -12,7 +12,7 @@ This solution will give me more:
 
 ## What technologies will be used? (~ potentially)
 * HTML/CSS/~Bootstrap/~Sass
-* JS/~jQuery
+* JS/~jQuery/~Node.js
 * React
 * Google Calender API
 
