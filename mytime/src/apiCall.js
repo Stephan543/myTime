@@ -81,10 +81,27 @@ calendar.freebusy.query(
       }
       return 0;
     });
-    console.log(newArr); //log a sorted array for all Calendars
+    // console.log(newArr); //log a sorted array for all Calendars
     // return freeSlots(eventStartTime, res.data.calendars[allCalendars[4].id].busy)
+    
+    const timeInt = 30; // Meeting Minutes time
+    var availableTimeArr = []; //Free Time array to show    
+    var searchStartTime = new Date();
+    searchStartTime.setDate(searchStartTime.getDate());
+    searchStartTime.setHours(8)
+    console.log(searchStartTime);
+
+    function freeDaySearch(searchStartTime){
+      while (searchStartTime.getHours(searchStartTime.getMinutes() + timeInt ) <= 17){
+        if ((searchStartTime.getMinutes() + timeInt) <= newArr[0].start){
+          availableTimeArr.push({start: searchStartTime, end: (searchStartTime.getMinutes() + 30)})
+        }
+        searchStartTime.setMinutes(searchStartTime.getMinutes() + timeInt);
+        console.log(searchStartTime);
+      }
+    }
+    freeDaySearch(searchStartTime);
+    console.log(availableTimeArr);
   }
 );
 
-// var timeInt = 2, // Meeting Minutes time
-// availableTimeArr = []; //Free Time array to show
