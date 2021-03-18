@@ -1,5 +1,3 @@
-
-
 const { google } = require("googleapis");
 const { OAuth2 } = google.auth;
 
@@ -12,8 +10,7 @@ const oAuth2Client = new OAuth2(
 );
 
 oAuth2Client.setCredentials({
-  refresh_token:
-    sensitiveInfo.refreshToken // refresh token - from google developer API Auth
+  refresh_token: sensitiveInfo.refreshToken, // refresh token - from google developer API Auth
 });
 
 const calendar = google.calendar({ version: "v3", auth: oAuth2Client }); //Creating new calendar instance
@@ -53,15 +50,14 @@ calendar.freebusy.query(
   },
   (err, res) => {
     if (err) return console.error("Free Busy Query Error: ", err);
-  
+
     var newArr = []; // Initialize a new array for grouped calendars
-    
+
     for (const [key, value] of Object.entries(res.data.calendars)) {
       //get the calendar key from the response body
       checkBusyCal(value.busy);
     }
 
-    
     // Adding each calendar together, as objects
     function checkBusyCal(busyArr) {
       if (busyArr !== 0) {
@@ -83,25 +79,44 @@ calendar.freebusy.query(
     });
     // console.log(newArr); //log a sorted array for all Calendars
     // return freeSlots(eventStartTime, res.data.calendars[allCalendars[4].id].busy)
-    
-    const timeInt = 30; // Meeting Minutes time
-    var availableTimeArr = []; //Free Time array to show    
-    var searchStartTime = new Date();
-    searchStartTime.setDate(searchStartTime.getDate());
-    searchStartTime.setHours(8)
-    console.log(searchStartTime);
 
-    function freeDaySearch(searchStartTime){
-      while (searchStartTime.getHours(searchStartTime.getMinutes() + timeInt ) <= 17){
-        if ((searchStartTime.getMinutes() + timeInt) <= newArr[0].start){
-          availableTimeArr.push({start: searchStartTime, end: (searchStartTime.getMinutes() + 30)})
+    const timeInt = 1800000; // Meeting Minutes (30 min) in miliseconds
+    var availableTimeArr = []; //Free Time array to show
+    var searchStartTime = new Date(),
+      searchEndTime = new Date();
+
+    searchStartTime.setDate(searchStartTime.getDate());
+    searchEndTime.setTime(searchEndTime.getTime() + timeInt);
+    // searchStartTime.setHours(8)
+
+    // Recursive Function to create new available time slots for each day
+    function freeDaySearch(viewTime, arrIndex) {
+      var testArrDateStart = new Date(newArr[arrIndex].start);
+      var testArrDateEnd = new Date(newArr[arrIndex].end);
+      var viewTimeStart = new Date(viewTime);
+      var viewTimeEnd = new Date();
+
+      if (viewTimeStart.getHours() >= 21 || viewTimeStart.getHours() < 8) {
+        return; //Cancel the recursion given my preffered work hours
+      }
+
+      if (viewTimeStart.getTime() <= testArrDateStart.getTime()) { 
+        if (viewTimeStart.getTime() + timeInt < testArrDateStart.getTime()) {
+          viewTimeEnd.setTime(viewTimeStart.getTime() + timeInt);
+          availableTimeArr.push({
+            start: viewTimeStart.toString(),
+            end: viewTimeEnd.toString(),
+          });
+          return freeDaySearch(viewTimeEnd, arrIndex + 1);
+        } else {
+          return freeDaySearch(newArr[arrIndex].end, arrIndex + 1);
         }
-        searchStartTime.setMinutes(searchStartTime.getMinutes() + timeInt);
-        console.log(searchStartTime);
+      } else {
+        return freeDaySearch(newArr[arrIndex].end, arrIndex + 1);
       }
     }
-    freeDaySearch(searchStartTime);
+    freeDaySearch(searchStartTime, 0);
     console.log(availableTimeArr);
   }
-);
 
+);
