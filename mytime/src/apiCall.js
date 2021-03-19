@@ -20,7 +20,7 @@ eventStartTime.setDate(eventStartTime.getDate());
 // console.log(eventStartTime);
 
 var eventEndTime = new Date();
-eventEndTime.setDate(eventEndTime.getDate() + 1);
+eventEndTime.setDate(eventEndTime.getDate() + 3);
 
 // Event Creation
 // const event = {
@@ -86,19 +86,23 @@ calendar.freebusy.query(
       searchEndTime = new Date();
 
     searchStartTime.setDate(searchStartTime.getDate());
-    searchEndTime.setTime(searchEndTime.getTime() + timeInt);
+    // searchEndTime.setTime(searchEndTime.getTime() + timeInt);
     // searchStartTime.setHours(8)
+
+    const mSecondCoeff = 1000 * 60 * 60 * 24;
+    const searchDays = (eventEndTime - eventStartTime);
 
     // Recursive Function to create new available time slots for each day
     function freeDaySearch(viewTime, arrIndex) {
-      var testArrDateStart = new Date(newArr[arrIndex].start);
-      var testArrDateEnd = new Date(newArr[arrIndex].end);
+      // console.log(arrIndex + '+')
       var viewTimeStart = new Date(viewTime);
       var viewTimeEnd = new Date();
-
-      if (viewTimeStart.getHours() >= 21 || viewTimeStart.getHours() < 8) {
+      if (viewTimeStart.getHours() >= 21 || arrIndex > newArr.length - 1) {
         return; //Cancel the recursion given my preffered work hours
       }
+
+      var testArrDateStart = new Date(newArr[arrIndex].start);
+      var testArrDateEnd = new Date(newArr[arrIndex].end);
 
       if (viewTimeStart.getTime() <= testArrDateStart.getTime()) { 
         if (viewTimeStart.getTime() + timeInt < testArrDateStart.getTime()) {
@@ -111,12 +115,23 @@ calendar.freebusy.query(
         } else {
           return freeDaySearch(newArr[arrIndex].end, arrIndex + 1);
         }
-      } else {
+      } else  {
         return freeDaySearch(newArr[arrIndex].end, arrIndex + 1);
       }
+
+      // if((viewTimeStart.getHours() >= 21 || viewTimeEnd.getHours() >= 21) && viewTimeStart.getTime() <= eventEndTime.getTime()){
+      //   viewTimeStart.setDate(viewTimeStart.getDate() + 1);
+      //   viewTimeStart.setHours(8);
+      //   console.log(arrIndex);
+      //   console.log(viewTimeEnd.start)
+      //   return freeDaySearch(viewTimeStart, arrIndex - 1 );
+      // }
     }
+
     freeDaySearch(searchStartTime, 0);
     console.log(availableTimeArr);
+    // console.log(newArr.length);
+    // console.log(newArr);
   }
 
 );
