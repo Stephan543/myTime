@@ -88,7 +88,6 @@ calendar.freebusy.query(
     searchStartTime.setDate(searchStartTime.getDate());
     // searchEndTime.setTime(searchEndTime.getTime() + timeInt);
     // searchStartTime.setHours(8)
-    console.log(searchStartTime);
 
     const mSecondCoeff = 1000 * 60 * 60 * 24;
     const searchDays = (eventEndTime - eventStartTime);
@@ -97,8 +96,10 @@ calendar.freebusy.query(
     function freeDaySearch(viewTime, arrIndex) {
       // console.log(arrIndex + '+')
       var viewTimeStart = new Date(viewTime);
-      
-      if (viewTimeStart.getHours() >= 21 || arrIndex > newArr.length - 1) {
+
+      // console.log(eventEndTime.toString());
+
+      if ((viewTimeStart.getTime() )>= eventEndTime.getTime() || arrIndex > newArr.length - 1) {
         return; //Cancel the recursion given my preffered work hours
       }
 
@@ -106,46 +107,50 @@ calendar.freebusy.query(
       var testArrDateEnd = new Date(newArr[arrIndex].end);
 
       console.log(viewTimeStart.getDate() < testArrDateStart.getDate())
-      
-      
       console.log(viewTimeStart.getDate().toString())
       console.log(testArrDateStart.getDate().toString())
 
       if (viewTimeStart.getTime() <= testArrDateStart.getTime()) { 
-        if (viewTimeStart.getTime() + timeInt < testArrDateStart.getTime()) {
+        if (viewTimeStart.getTime() + timeInt <= testArrDateStart.getTime()) {
           viewTimeEnd.setTime(viewTimeStart.getTime() + timeInt);
           availableTimeArr.push({
             start: viewTimeStart.toString(),
             end: viewTimeEnd.toString(),
           });
-          // if((viewTimeStart.getHours() >= 21 || viewTimeEnd.getHours() >= 21)){
-          //   viewTimeStart.setDate(viewTimeStart.getDate() + 1);
-          //   viewTimeStart.setHours(8);
+          console.log(availableTimeArr);
+          if((viewTimeEnd.getHours() >= 21 )){
+            viewTimeStart.setDate(viewTimeStart.getDate() + 1);
+            viewTimeStart.setHours(8) //Set it to search new day at my preffered time ... 8am
+            viewTimeStart.setTime(viewTimeStart.getTime() - timeInt); //correct day search my time int 8:30 vs 8am
           //   // // console.log(arrIndex);
-          //   // // console.log(viewTimeEnd.start)
+            console.log(viewTimeStart.toString())
           //   // if(viewTimeStart.getDate().toString() < testArrDateStart.getDate().toString()){
           //   //   console.log('X')
-          //   //   arrIndex = 0;
+              // arrIndex = -1;
           //   // }
-          // return freeDaySearch(viewTimeStart, arrIndex);
-          // }  
+          return freeDaySearch(viewTimeStart, arrIndex); // New Day search recursion
+          }  
+            console.log(viewTimeStart.toString())
+
             console.log(arrIndex + 'B');
-          return freeDaySearch(viewTimeEnd, arrIndex + 1);
+          return freeDaySearch(viewTimeEnd, arrIndex); // Recursion after new object creation
         } else {
+          console.log(viewTimeStart.toString())
+
           console.log(arrIndex + 'C');
 
-          return freeDaySearch(newArr[arrIndex].end, arrIndex + 1);
+          return freeDaySearch(newArr[arrIndex].end, arrIndex + 1); // Recursion if there is not enough space in a possible window
         }
       } else  {
         console.log(arrIndex + 'D');
 
-        return freeDaySearch(newArr[arrIndex].end, arrIndex + 1);
+        return freeDaySearch(newArr[arrIndex].end, arrIndex + 1); // recursion if the start time is after the new Array (meetings) Obj
       }
      
     }
 
     freeDaySearch(searchStartTime, 0);
-    console.log(newArr);
+    // console.log(newArr);
     console.log(availableTimeArr);
     // console.log(newArr.length);
     // console.log(newArr);
