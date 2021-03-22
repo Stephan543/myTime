@@ -20,23 +20,8 @@ eventStartTime.setDate(eventStartTime.getDate());
 // console.log(eventStartTime);
 
 var eventEndTime = new Date();
-eventEndTime.setDate(eventEndTime.getDate() + 3);
-
-// Event Creation
-// const event = {
-//   summary: "Meet with Stephan",
-//   location: "295 California St, San Fransisco, CA 94111",
-//   colorId: 1,
-//   description: "Meeting with Stephan to set a deadline for this google cal api app",
-//   start: {
-//     dateTime: eventStartTime,
-//     timeZone: "America/Toronto",
-//   },
-//   end: {
-//     dateTime: eventEndTime,
-//     timeZone: "America/Toronto",
-//   },
-// }
+eventEndTime.setDate(eventEndTime.getDate() + 15);
+// eventEndTime.setTime(eventEndTime.getTime() + 604800000);
 
 // Check for conflicts
 calendar.freebusy.query(
@@ -111,15 +96,16 @@ calendar.freebusy.query(
       console.log(testArrDateStart.getDate().toString())
 
       if (viewTimeStart.getTime() <= testArrDateStart.getTime()) { 
-        if (viewTimeStart.getTime() + timeInt <= testArrDateStart.getTime()) {
+        if (viewTimeStart.getTime() + timeInt <= testArrDateStart.getTime() && viewTimeStart.getHours() !==0) {
           viewTimeEnd.setTime(viewTimeStart.getTime() + timeInt);
           availableTimeArr.push({
             start: viewTimeStart.toString(),
             end: viewTimeEnd.toString(),
           });
-          console.log(availableTimeArr);
-          if((viewTimeEnd.getHours() >= 21 )){
-            viewTimeStart.setDate(viewTimeStart.getDate() + 1);
+          if((viewTimeEnd.getHours() >= 21 || viewTimeStart.getHours() == 0 )){
+            if(viewTimeStart.getHours() !== 0){ // Catches all day events
+              viewTimeStart.setDate(viewTimeStart.getDate() + 1);
+            }
             viewTimeStart.setHours(8) //Set it to search new day at my preffered time ... 8am
             viewTimeStart.setTime(viewTimeStart.getTime() - timeInt); //correct day search my time int 8:30 vs 8am
           //   // // console.log(arrIndex);
@@ -157,3 +143,19 @@ calendar.freebusy.query(
   }
 
 );
+
+// Event Creation
+// const event = {
+//   summary: "Meet with Stephan",
+//   location: "295 California St, San Fransisco, CA 94111",
+//   colorId: 1,
+//   description: "Meeting with Stephan to set a deadline for this google cal api app",
+//   start: {
+//     dateTime: eventStartTime,
+//     timeZone: "America/Toronto",
+//   },
+//   end: {
+//     dateTime: eventEndTime,
+//     timeZone: "America/Toronto",
+//   },
+// }
