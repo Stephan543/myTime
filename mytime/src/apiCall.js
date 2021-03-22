@@ -65,7 +65,7 @@ calendar.freebusy.query(
     // console.log(newArr); //log a sorted array for all Calendars
     // return freeSlots(eventStartTime, res.data.calendars[allCalendars[4].id].busy)
 
-    const timeInt = 1800000; // Meeting Minutes (30 min) in miliseconds
+    const timeInt = 1800000*2; // Meeting Minutes (30 min) in miliseconds
     var availableTimeArr = []; //Free Time array to show
     var searchStartTime = new Date(),
       searchEndTime = new Date();
@@ -91,6 +91,15 @@ calendar.freebusy.query(
       var testArrDateStart = new Date(newArr[arrIndex].start);
       var testArrDateEnd = new Date(newArr[arrIndex].end);
 
+      if(viewTimeStart.getHours() >= 20 || viewTimeStart.getHours()==0){ // Check for end of day boundary
+        if(viewTimeStart.getHours() !== 0){ // Catches all day events
+          viewTimeStart.setDate(viewTimeStart.getDate() + 1); // Set search time to next day if at the end of the day
+        }
+        viewTimeStart.setHours(8) //Set it to search time to my preferred start time ... 8am
+        viewTimeStart.setTime(viewTimeStart.getTime() - timeInt); //correct day search my time int 8:30 vs 8am
+      return freeDaySearch(viewTimeStart, arrIndex); // New Day search recursion
+
+      }
       console.log(viewTimeStart.getDate() < testArrDateStart.getDate())
       console.log(viewTimeStart.getDate().toString())
       console.log(testArrDateStart.getDate().toString())
@@ -102,20 +111,7 @@ calendar.freebusy.query(
             start: viewTimeStart.toString(),
             end: viewTimeEnd.toString(),
           });
-          if((viewTimeEnd.getHours() >= 21 || viewTimeStart.getHours() == 0 )){
-            if(viewTimeStart.getHours() !== 0){ // Catches all day events
-              viewTimeStart.setDate(viewTimeStart.getDate() + 1);
-            }
-            viewTimeStart.setHours(8) //Set it to search new day at my preffered time ... 8am
-            viewTimeStart.setTime(viewTimeStart.getTime() - timeInt); //correct day search my time int 8:30 vs 8am
-          //   // // console.log(arrIndex);
-            console.log(viewTimeStart.toString())
-          //   // if(viewTimeStart.getDate().toString() < testArrDateStart.getDate().toString()){
-          //   //   console.log('X')
-              // arrIndex = -1;
-          //   // }
-          return freeDaySearch(viewTimeStart, arrIndex); // New Day search recursion
-          }  
+  
             console.log(viewTimeStart.toString())
 
             console.log(arrIndex + 'B');
