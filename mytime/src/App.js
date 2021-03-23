@@ -1,5 +1,6 @@
 import logo from "./logo.svg";
 import "./App.css";
+import availableTimeArr from "./apiCall.js";
 
 function App() {
   return (
