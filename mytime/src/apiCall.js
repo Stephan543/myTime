@@ -6,16 +6,19 @@ const oAuth2Client = new OAuth2(
   sensitiveInfo.clientId, // Client ID - from google developer API Auth
   sensitiveInfo.clientSecret // Client Secret - from google developer API Auth
 );
-const calendar = google.calendar({ version: "v3", auth: oAuth2Client }); //Creating new calendar instance
+
 oAuth2Client.setCredentials({
-  refresh_token: sensitiveInfo.refreshToken, // refresh token - from google developer API Auth
+  refresh_token: sensitiveInfo.refreshToken, // refresh token - from google developer API Auth playground
 });
+
+const calendar = google.calendar({ version: "v3", auth: oAuth2Client }); //Creating new calendar instance
 
 // Search time initialization
 var eventStartTime = new Date(); 
   eventStartTime.setDate(eventStartTime.getDate());
 var eventEndTime = new Date();
-  eventEndTime.setDate(eventEndTime.getDate() + 15);
+  eventEndTime.setDate(eventEndTime.getDate() + 2);
+
 
 // Google calendar api query request
 calendar.freebusy.query(
