@@ -8,6 +8,7 @@ const oAuth2Client = new OAuth2(
 );
 
 oAuth2Client.setCredentials({
+  access_token: sensitiveInfo.access_token,
   refresh_token: sensitiveInfo.refreshToken, // refresh token - from google developer API Auth playground
 });
 
@@ -61,7 +62,7 @@ calendar.freebusy.query(
     });
 
     var timeInt = 1800000; // Meeting Minutes (30 min) in 
-    timeInt *= 2; // Convert to 1hr meeting minutes
+    timeInt *= 1; // Convert to 1hr meeting minutes
     var availableTimeArr = []; //Free Time array to show
     var searchStartTime = new Date();
       searchStartTime.setDate(searchStartTime.getDate());
