@@ -1,6 +1,6 @@
 # myTime Web Application
 ## What is the purpose of this?
-This project will allow me to flex my fullstack dev muscles and practicing calling the google calender API. 
+This project will allow me to explore intergrating with google calendar API's, OAuth2 and algorithmic thinking.
 
 This project will automate the repetitive back and forth scheduling messages between clients, employers or anyone who wants to make some time to meet.
 
@@ -18,7 +18,7 @@ This solution will give me more:
 
 ## Future Plans:
 
-1. Once the minimal viable product (MVP) is running I will upload it to my server
+1. Once the MVP is running I will upload it to my server at stephaniskander.org
 2. Rigourous testing/ fixing bugs
 3. Add in automatic reminders
 4. Add in the ability to send meeting invites to my Gmail
